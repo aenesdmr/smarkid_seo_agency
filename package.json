@@ -1,0 +1,16 @@
+{
+  "name": "smartkid-seo-agent",
+  "version": "1.0.0",
+  "description": "Smartkid.agency için SEO & GEO uyumlu içerik yazma ve Framer CMS otomatik yayınlama ajanı",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "test-local": "node index.js --local"
+  },
+  "dependencies": {
+    "@google/genai": "latest",
+    "dotenv": "^16.4.5",
+    "framer-api": "latest"
+  }
+}

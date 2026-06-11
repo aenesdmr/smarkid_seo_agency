@@ -1,0 +1,46 @@
+name: Daily Smartkid SEO Agent
+
+on:
+  schedule:
+    # TSİ 09:00 (06:00 UTC) - Sabah Yayını
+    - cron: '0 6 * * *'
+    # TSİ 18:00 (15:00 UTC) - Akşam Yayını
+    - cron: '0 15 * * *'
+  workflow_dispatch:
+    # Manuel çalıştırma tetikleyicisi (İstediğiniz zaman panelden çalıştırabilirsiniz)
+    inputs:
+      topic_index:
+        description: 'Yayınlanacak konu index numarası (Opsiyonel, boş bırakılırsa sıralı gider)'
+        required: false
+        default: ''
+
+jobs:
+  run-agent:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run SEO Agent
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          FRAMER_API_KEY: ${{ secrets.FRAMER_API_KEY }}
+          FRAMER_PROJECT_URL: ${{ secrets.FRAMER_PROJECT_URL }}
+          FRAMER_COLLECTION_ID: ${{ secrets.FRAMER_COLLECTION_ID }}
+          USE_GOOGLE_SEARCH: ${{ secrets.USE_GOOGLE_SEARCH }}
+        run: |
+          if [ -n "${{ github.event.inputs.topic_index }}" ]; then
+            node index.js --topic ${{ github.event.inputs.topic_index }}
+          else
+            node index.js
+          fi
