@@ -2,6 +2,8 @@ import 'dotenv/config';
 import { config } from './config.js';
 import { writeArticle } from './agent.js';
 import { publishToFramer } from './framer.js';
+import fs from 'fs';
+import path from 'path';
 
 async function main() {
   console.log('🌟 ==================================================');
@@ -43,7 +45,25 @@ async function main() {
     console.log(`ℹ️  Meta Açıklama: "${article.metaDescription}"`);
     console.log(`ℹ️  Görsel Promptu: "${article.coverImagePrompt}"`);
 
-    // 2. Framer'da yayınla
+    // 2. Yerel bir yedek kopyası kaydet (İnceleme kolaylığı için)
+    const backupDir = path.join(process.cwd(), 'published_articles');
+    if (!fs.existsSync(backupDir)) {
+      fs.mkdirSync(backupDir, { recursive: true });
+    }
+    const backupPath = path.join(backupDir, `${article.slug}.md`);
+    const backupContent = `---
+title: "${article.title}"
+metaDescription: "${article.metaDescription}"
+coverImagePrompt: "${article.coverImagePrompt}"
+date: "${new Date().toLocaleDateString('tr-TR')}"
+---
+
+${article.content}
+`;
+    fs.writeFileSync(backupPath, backupContent, 'utf8');
+    console.log(`💾 Makalenin yerel yedeği kaydedildi: published_articles/${article.slug}.md`);
+
+    // 3. Framer'da yayınla
     console.log(`\n📤 Framer CMS yayınlama süreci başlatılıyor...`);
     const success = await publishToFramer(article);
 
