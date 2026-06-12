@@ -24,7 +24,7 @@ export const config = {
     },
     geo: {
       directAnswers: "Makalenin başında veya ilgili alt başlıklarda '... Nedir?', '... Nasıl Yapılır?' gibi yapay zeka arama asistanlarının doğrudan alıntılayabileceği net tanımlar bulunmalı.",
-      structuredData: "Yazı içerisinde en az 1 adet karşılaştırma tablosu (markdown formatında) veya adım adım süreç listesi bulunmalı.",
+      structuredData: "Yazı içerisinde karşılaştırmaları, verileri veya önemli kriterleri sunarken mutlaka şık markdown tabloları (| sütun |) kullan. Framer zengin metin düzenleyicisi markdown tablolarını destekler ve bunlar okuyucuya harika bir görsel hiyerarşi sunar.",
       bulletPoints: "Okunabilirliği ve yapay zeka tarafından taranabilirliği artırmak için bolca madde işareti (bullet points) kullanılmalı.",
       statistics: "Veri odaklılığı vurgulamak için sektörel istatistikler ve yüzdeler içermeli (Örn: 'ROAS değerini %80 artırmak için...')."
     }

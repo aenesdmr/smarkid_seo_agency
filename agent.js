@@ -69,7 +69,7 @@ Lütfen en güncel sektörel trendleri ve verileri internette aratarak (Google S
   // Modelleri sırayla deneme yardımcı fonksiyonu
   async function generateWithFallback(configOptions) {
     // Ücretli hesaba geçildiği için öncelikli olarak en kaliteli metinleri yazan Pro modelleri, ardından Flash modellerini deniyoruz
-    const models = ['gemini-2.5-pro', 'gemini-pro-latest', 'gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-2.0-flash-lite', 'gemini-flash-latest'];
+    const models = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-2.5-pro', 'gemini-pro-latest', 'gemini-2.0-flash-lite', 'gemini-flash-latest'];
     let lastError = null;
 
     for (const model of models) {
@@ -158,8 +158,10 @@ Makale İçeriği:
 ${rawMarkdown}
 
 Lütfen içeriği tam olarak koru. Markdown formatındaki makale gövdesini "content" alanına yerleştir.
-ÖNEMLİ:
-- "content" alanı içinde kesinlikle H1 ('#') başlık kullanma.
+ÖNEMLİ FORMAT KURALLARI:
+- Markdown tablolarını (| sütun |), listeleri, kalın yazıları ve tüm biçimlendirmeleri BİREBİR koru. Tabloları KESİNLİKLE silme veya bozma.
+- Paragraflar ve başlıklar arasındaki tüm yeni satır (\\n\\n) boşluklarını KESİNLİKLE koru. Metni tek bir satıra sıkıştırma. Her başlık ve paragraf mutlaka kendi satırında olmalı ve aralarında boş satır bulunmalıdır.
+- "content" alanı içinde kesinlikle H1 ('#') başlık kullanma. Eğer varsa H2'ye ('##') dönüştür.
 - Makalenin başlığını gövdenin en üstüne '# Başlık' şeklinde ekleme. Doğrudan giriş metniyle başla.
 - Gövde içindeki tüm ana başlıklar H2 ('##'), alt başlıklar H3 ('###') olmalıdır.
 - Makale için uygun bir başlık, URL slug'ı, meta açıklaması ve kapak görseli promptu oluştur.
@@ -177,7 +179,7 @@ Lütfen içeriği tam olarak koru. Markdown formatındaki makale gövdesini "con
             slug: { type: 'string', description: 'URL için SEO uyumlu slug (Örn: roas-artirma-yontemleri)' },
             metaDescription: { type: 'string', description: 'Arama motorları için 160 karakteri geçmeyen özet açıklama' },
             coverImagePrompt: { type: 'string', description: 'Bu makale için kapak resmi oluşturabilecek detaylı İngilizce görsel üretme promptu' },
-            content: { type: 'string', description: 'Markdown formatında makale gövdesi. Kesinlikle H1 (#) başlığı içermemeli, ana başlıklar H2 (##), alt başlıklar H3 (###) olmalıdır. Makalenin ana başlığı en üstte bulunmamalıdır.' }
+            content: { type: 'string', description: 'Markdown formatında makale gövdesi. Markdown tablolarını, listeleri ve başlıkları birebir korumalıdır. Paragraflar ve başlıklar arasındaki tüm yeni satırlar (\\n) korunmalıdır. Tüm içeriği tek satıra sıkıştırmayın, satır satır bölünmüş ve okunabilir bir markdown yapısında sunun.' }
           },
           required: ['title', 'slug', 'metaDescription', 'coverImagePrompt', 'content']
         }
@@ -186,13 +188,23 @@ Lütfen içeriği tam olarak koru. Markdown formatındaki makale gövdesini "con
 
     const articleData = JSON.parse(formatResponse.text);
 
-    // Programatik olarak H1 (#) başlıkları temizleme/dönüştürme garantisi
+    // Programatik olarak başlıkları ve içeriği düzenleme garantisi
     if (articleData.content) {
       let content = articleData.content.trim();
-      // 1. Eğer en üstte bir H1 başlık varsa temizle (çünkü Framer bunu zaten başlık olarak ekliyor)
+      
+      // 1. Başlıkların (## ve ###) önünde ve arkasında tam olarak birer boş satır olduğundan emin olalım
+      // Bu sayede Framer'ın markdown yorumlayıcısı başlıkları karıştırmaz.
+      content = content.replace(/^\s*(#+)\s+(.+?)\s*$/gm, '\n\n$1 $2\n\n');
+
+      // 2. 3 veya daha fazla ardışık boş satırları teke düşürelim (\n\n)
+      content = content.replace(/\n{3,}/g, '\n\n');
+
+      // 3. En üstteki olası H1 başlığı temizle (makalenin kendi başlığı olmasın)
       content = content.replace(/^#\s+.+$/m, '');
-      // 2. Kalan H1 başlıkları H2'ye dönüştür
+
+      // 4. Kalan H1 başlıkları H2'ye dönüştür
       content = content.replace(/^#\s+(.+)$/gm, '## $1');
+
       articleData.content = content.trim();
     }
 
