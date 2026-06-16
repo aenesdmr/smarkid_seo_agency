@@ -100,6 +100,9 @@ ${article.content}
       } else if (fieldName === 'featured' || fieldName === 'öne çıkanlar' || fieldName === 'one cikanlar') {
         mappedValue = true; // varsayılan olarak öne çıkar
         hasMapping = true;
+      } else if (fieldName === 'image' || fieldName === 'görsel' || fieldName === 'kapak' || fieldType === 'image') {
+        mappedValue = 'image';
+        hasMapping = true;
       } else if (fieldName === 'catergory' || fieldName === 'category') {
         const enumCases = field.cases || [];
         const blogCase = enumCases.find(c => c.name.toLowerCase() === 'blog');
