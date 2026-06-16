@@ -182,7 +182,7 @@ Lütfen içeriği tam olarak koru. Markdown formatındaki makale gövdesini "con
             metaDescription: { type: 'string', description: 'Arama motorları için 160 karakteri geçmeyen özet açıklama' },
             coverImagePrompt: { type: 'string', description: 'Bu makale için kapak resmi oluşturabilecek detaylı İngilizce görsel üretme promptu' },
             coverImageColor: { type: 'string', description: 'Makalenin konusunu en iyi temsil eden kurumsal renk (blue, purple, indigo, cyan, black, green)' },
-            content: { type: 'string', description: 'Markdown formatında makale gövdesi. Markdown tablolarını, listeleri ve başlıkları birebir korumalıdır. Paragraflar ve başlıklar arasındaki tüm yeni satırlar (\\n) korunmalıdır. Tüm içeriği tek satıra sıkıştırmayın, satır satır bölünmüş ve okunabilir bir markdown yapısında sunun.' }
+            content: { type: 'string', description: 'Markdown formatında makale gövdesi. Markdown tablolarını, listeleri ve başlıkları birebir korumalıdır. Paragraflar ve başlıklar arasında gerçek yeni satır boşlukları kullanılmalıdır. Tüm içeriği tek satıra sıkıştırmayın, satır satır bölünmüş ve okunabilir bir markdown yapısında sunun.' }
           },
           required: ['title', 'slug', 'metaDescription', 'coverImagePrompt', 'coverImageColor', 'content']
         }
@@ -194,6 +194,10 @@ Lütfen içeriği tam olarak koru. Markdown formatındaki makale gövdesini "con
     // Programatik olarak başlıkları, HTML etiketlerini ve içeriği düzenleme garantisi
     if (articleData.content) {
       let content = articleData.content.trim();
+      
+      // 1. Literal \n ve \r kaçış dizilerini gerçek satır sonu karakterlerine dönüştür
+      content = content.replace(/\\n/g, '\n');
+      content = content.replace(/\\r/g, '\r');
       
       // HTML biçimlendirmelerini Markdown'a çevir
       content = content.replace(/<strong[^>]*>([\s\S]*?)<\/strong>/gi, '**$1**');
