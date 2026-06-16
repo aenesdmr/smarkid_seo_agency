@@ -9,40 +9,31 @@ const IMAGE_POOL = {
   blue: [
     'photo-1618005182384-a83a8bd57fbe', // Blue/purple glass wave
     'photo-1634017839464-5c339ebe3cb4', // 3D geometric shapes
-    'photo-1618005198143-e5283b519a7f', // Cyan/blue waves
-    'photo-1608181114410-db2bb03a9442', // Dark blue minimalist shapes
     'photo-1620641788421-7a1c342ea42e', // Holographic iridescent waves
-    'photo-1618005158179-023f9ec367eb', // Indigo/cyan wave
   ],
   purple: [
     'photo-1635070041078-e363dbe005cb', // 3D glass rendering
     'photo-1617791160536-598cf32026fb', // Lavender abstract 3D
-    'photo-1617791160505-6f006e121980', // Dark purple 3D waves
     'photo-1607604276583-eef5d076aa5f', // Purple neon geometry
     'photo-1620641788421-7a1c342ea42e', // Holographic iridescent waves
     'photo-1618005182384-a83a8bd57fbe', // Blue/purple glass wave
   ],
   indigo: [
-    'photo-1618005158179-023f9ec367eb', // Indigo/cyan wave
     'photo-1618005182384-a83a8bd57fbe', // Blue/purple glass wave
     'photo-1620641788421-7a1c342ea42e', // Holographic wave
     'photo-1634017839464-5c339ebe3cb4', // Geometric shapes
   ],
   cyan: [
-    'photo-1618005198143-e5283b519a7f', // Cyan/blue waves
     'photo-1633167606207-d840b5070fc2', // Abstract 3D pastel shapes
     'photo-1620641788421-7a1c342ea42e', // Holographic wave
-    'photo-1618005158179-023f9ec367eb', // Indigo/cyan wave
   ],
   green: [
-    'photo-1618005198130-971c261e479c', // Mint green abstract
     'photo-1633167606207-d840b5070fc2', // Abstract shapes (green/cyan parts)
     'photo-1620641788421-7a1c342ea42e', // Holographic wave (green highlights)
   ],
   black: [
     'photo-1550684848-fac1c5b4e853', // Minimalist black/dark wave
     'photo-1600585154340-be6161a56a0c', // Dark modern architecture
-    'photo-1608181114410-db2bb03a9442', // Dark blue/black shapes
   ]
 };
 

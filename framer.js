@@ -100,7 +100,7 @@ ${article.content}
       } else if (fieldName === 'featured' || fieldName === 'öne çıkanlar' || fieldName === 'one cikanlar') {
         mappedValue = true; // varsayılan olarak öne çıkar
         hasMapping = true;
-      } else if (fieldName === 'image' || fieldName === 'görsel' || fieldName === 'kapak' || fieldType === 'image') {
+      } else if (fieldName === 'image' || fieldName === 'görsel' || fieldName === 'kapak') {
         mappedValue = 'image';
         hasMapping = true;
       } else if (fieldName === 'catergory' || fieldName === 'category') {
