@@ -24,7 +24,15 @@ async function main() {
     const dayOfYear = Math.floor(diff / oneDay);
     
     // Saat 12:00'den önce ise Sabah (0), sonra ise Akşam (1) yayını
-    const isEvening = now.getHours() >= 12;
+    let isEvening = false;
+    const schedule = process.env.GITHUB_EVENT_SCHEDULE;
+    if (schedule) {
+      // Eğer akşam cron şablonu ('0 15 * * *' / 18:00 TSİ) tetiklendiyse isEvening = true yap
+      isEvening = schedule.includes('15');
+    } else {
+      // Yerel veya manuel çalıştırma için saat kontrolü yap
+      isEvening = now.getHours() >= 12;
+    }
     topicIndex = (dayOfYear * 2 + (isEvening ? 1 : 0)) % config.topics.length;
   }
 

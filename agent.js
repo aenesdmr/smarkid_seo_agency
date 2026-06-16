@@ -159,7 +159,8 @@ ${rawMarkdown}
 
 Lütfen içeriği tam olarak koru. Markdown formatındaki makale gövdesini "content" alanına yerleştir.
 ÖNEMLİ FORMAT KURALLARI:
-- Markdown tablolarını (| sütun |), listeleri, kalın yazıları ve tüm biçimlendirmeleri BİREBİR koru. Tabloları KESİNLİKLE silme veya bozma.
+- KESİNLİKLE hiçbir HTML etiketi (örn. <p>, <strong>, <em>, <p dir="auto"> vb.) kullanma. Tüm kalın metinleri markdown formatında (**kalın**) yap.
+- Markdown tablolarını (| sütun |), listeleri ve tüm biçimlendirmeleri BİREBİR koru. Tabloları KESİNLİKLE silme veya bozma.
 - Paragraflar ve başlıklar arasındaki tüm yeni satır (\\n\\n) boşluklarını KESİNLİKLE koru. Metni tek bir satıra sıkıştırma. Her başlık ve paragraf mutlaka kendi satırında olmalı ve aralarında boş satır bulunmalıdır.
 - "content" alanı içinde kesinlikle H1 ('#') başlık kullanma. Eğer varsa H2'ye ('##') dönüştür.
 - Makalenin başlığını gövdenin en üstüne '# Başlık' şeklinde ekleme. Doğrudan giriş metniyle başla.
@@ -188,10 +189,23 @@ Lütfen içeriği tam olarak koru. Markdown formatındaki makale gövdesini "con
 
     const articleData = JSON.parse(formatResponse.text);
 
-    // Programatik olarak başlıkları ve içeriği düzenleme garantisi
+    // Programatik olarak başlıkları, HTML etiketlerini ve içeriği düzenleme garantisi
     if (articleData.content) {
       let content = articleData.content.trim();
       
+      // HTML biçimlendirmelerini Markdown'a çevir
+      content = content.replace(/<strong[^>]*>([\s\S]*?)<\/strong>/gi, '**$1**');
+      content = content.replace(/<b[^>]*>([\s\S]*?)<\/b>/gi, '**$1**');
+      content = content.replace(/<em[^>]*>([\s\S]*?)<\/em>/gi, '*$1*');
+      content = content.replace(/<i[^>]*>([\s\S]*?)<\/i>/gi, '*$1*');
+      
+      // Dış paragraf sarmalayıcılarını kaldır
+      content = content.replace(/^<p[^>]*>/i, '');
+      content = content.replace(/<\/p>$/i, '');
+      
+      // Kalan tüm HTML etiketlerini tamamen temizle
+      content = content.replace(/<[^>]+>/g, '');
+
       // 1. Başlıkların (## ve ###) önünde ve arkasında tam olarak birer boş satır olduğundan emin olalım
       // Bu sayede Framer'ın markdown yorumlayıcısı başlıkları karıştırmaz.
       content = content.replace(/^\s*(#+)\s+(.+?)\s*$/gm, '\n\n$1 $2\n\n');
