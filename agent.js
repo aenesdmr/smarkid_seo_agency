@@ -166,6 +166,7 @@ Lütfen içeriği tam olarak koru. Markdown formatındaki makale gövdesini "con
 - Makalenin başlığını gövdenin en üstüne '# Başlık' şeklinde ekleme. Doğrudan giriş metniyle başla.
 - Gövde içindeki tüm ana başlıklar H2 ('##'), alt başlıklar H3 ('###') olmalıdır.
 - Makale için uygun bir başlık, URL slug'ı, meta açıklaması ve kapak görseli promptu oluştur.
+- Makalenin konusunu en iyi temsil eden kurumsal renk tonunu seç (Seçenekler: "blue", "purple", "indigo", "cyan", "black", "green"). Bu rengi "coverImageColor" alanına yerleştir.
 `;
 
     const formatResponse = await generateWithFallback({
@@ -180,9 +181,10 @@ Lütfen içeriği tam olarak koru. Markdown formatındaki makale gövdesini "con
             slug: { type: 'string', description: 'URL için SEO uyumlu slug (Örn: roas-artirma-yontemleri)' },
             metaDescription: { type: 'string', description: 'Arama motorları için 160 karakteri geçmeyen özet açıklama' },
             coverImagePrompt: { type: 'string', description: 'Bu makale için kapak resmi oluşturabilecek detaylı İngilizce görsel üretme promptu' },
+            coverImageColor: { type: 'string', description: 'Makalenin konusunu en iyi temsil eden kurumsal renk (blue, purple, indigo, cyan, black, green)' },
             content: { type: 'string', description: 'Markdown formatında makale gövdesi. Markdown tablolarını, listeleri ve başlıkları birebir korumalıdır. Paragraflar ve başlıklar arasındaki tüm yeni satırlar (\\n) korunmalıdır. Tüm içeriği tek satıra sıkıştırmayın, satır satır bölünmüş ve okunabilir bir markdown yapısında sunun.' }
           },
-          required: ['title', 'slug', 'metaDescription', 'coverImagePrompt', 'content']
+          required: ['title', 'slug', 'metaDescription', 'coverImagePrompt', 'coverImageColor', 'content']
         }
       }
     });

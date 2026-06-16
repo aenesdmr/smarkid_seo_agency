@@ -1,6 +1,7 @@
 import { connect } from 'framer-api';
 import fs from 'fs';
 import path from 'path';
+import { getAbstractImage } from './image-finder.js';
 
 /**
  * Makaleyi Framer CMS'e yükleyen veya simüle modda yerel dosyaya yazan fonksiyon
@@ -122,7 +123,9 @@ ${article.content}
         } else if (fieldType === 'number') {
           fieldData[field.id] = { type: 'number', value: Number(mappedValue) };
         } else if (fieldType === 'image') {
-          fieldData[field.id] = { type: 'image', value: null };
+          const imageUrl = await getAbstractImage(article.coverImageColor);
+          fieldData[field.id] = { type: 'image', value: imageUrl };
+          console.log(`🖼️  Makale için Unsplash'ten abstract 3D render görseli atandı: ${imageUrl}`);
         }
       }
     }
