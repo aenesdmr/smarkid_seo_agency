@@ -2,10 +2,10 @@ name: Daily Smartkid SEO Agent
 
 on:
   schedule:
-    # TSİ 09:00 (06:00 UTC) - Sabah Yayını
-    - cron: '0 6 * * *'
-    # TSİ 18:00 (15:00 UTC) - Akşam Yayını
-    - cron: '0 15 * * *'
+    # TSİ 09:17 (06:17 UTC) - Sabah Yayını
+    - cron: '17 6 * * *'
+    # TSİ 18:17 (15:17 UTC) - Akşam Yayını
+    - cron: '17 15 * * *'
   workflow_dispatch:
     # Manuel çalıştırma tetikleyicisi (İstediğiniz zaman panelden çalıştırabilirsiniz)
     inputs:
