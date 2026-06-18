@@ -47,3 +47,20 @@ jobs:
           else
             node index.js
           fi
+
+      - name: Send error email on failure
+        if: failure()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          username: ${{ secrets.MAIL_USERNAME }}
+          password: ${{ secrets.MAIL_PASSWORD }}
+          subject: "❌ Smartkid Blog Ajanı Hatası!"
+          to: demir@smartkid.agency
+          from: Smartkid SEO Agent <noreply@smartkid.agency>
+          body: |
+            Smartkid SEO Ajanı çalışırken bir hata oluştu veya süreç yarıda kesildi!
+
+            Hata Detayları ve Loglar: https://github.com/aenesdmr/smarkid_seo_agency/actions/runs/${{ github.run_id }}
+
