@@ -5,6 +5,7 @@ import { publishToFramer } from './framer.js';
 import { sendToWebhook } from './webhook.js';
 import { sendDetailedErrorEmail } from './emailer.js';
 import { generateBrandedCover } from './cover_generator.js';
+import { generateFreshTopic } from './topic_generator.js';
 import fs from 'fs';
 import path from 'path';
 
@@ -26,28 +27,28 @@ async function main() {
 
   // State dosyasından kullanılan konuları ve sayı numarasını al
   const statePath = path.join(process.cwd(), 'state.json');
-  let stateData = { lastIssueNumber: 74, usedTopics: [], usedImages: [] };
+  let stateData = { lastIssueNumber: 77, usedTopics: [], usedImages: [] };
   if (fs.existsSync(statePath)) {
     try {
       stateData = JSON.parse(fs.readFileSync(statePath, 'utf8'));
     } catch (e) {}
   }
 
-  const nextIssueNumber = (stateData.lastIssueNumber || 74) + 1;
+  const nextIssueNumber = (stateData.lastIssueNumber || 77) + 1;
+  let selectedTopic = null;
 
-  // Konu seçimi: Eğer elle verilmediyse daha önce kullanılmamış ilk konuyu seç
-  if (topicIndex === -1 || isNaN(topicIndex) || topicIndex < 0 || topicIndex >= config.topics.length) {
+  // Konu seçimi: Eğer elle verildiyse onu kullan, verilmediyse taze konu bul
+  if (topicIndex >= 0 && topicIndex < config.topics.length) {
+    selectedTopic = config.topics[topicIndex];
+  } else {
     const unusedTopics = config.topics.filter(t => !stateData.usedTopics.includes(t.title));
     if (unusedTopics.length > 0) {
-      const selected = unusedTopics[0];
-      topicIndex = config.topics.indexOf(selected);
+      selectedTopic = unusedTopics[0];
     } else {
-      // Tüm konular işlendiyse döngüsel seç
-      topicIndex = nextIssueNumber % config.topics.length;
+      console.log('🔄 Statik konu listesindeki tüm konular daha önce işlendi. Yapay zeka ile yepyeni taze bir konu üretiliyor...');
+      selectedTopic = await generateFreshTopic(stateData.usedTopics);
     }
   }
-
-  const selectedTopic = config.topics[topicIndex];
 
   console.log(`📅 Bugünün Seçilen Konusu (SIO #${nextIssueNumber}):`);
   console.log(`👉 Başlık: "${selectedTopic.title}"`);
