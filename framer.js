@@ -145,16 +145,27 @@ ${article.content}
       }
     ]);
 
-    console.log('🚀 Sitede yapılan değişiklikler yayınlanıyor (Publishing)...');
+    console.log('⏳ CMS değişikliklerinin senkronize olması için 5 saniye bekleniyor...');
+    await new Promise(res => setTimeout(res, 5000));
+
+    console.log('🚀 Sitede yapılan değişiklikler otomatik yayınlanıyor (Publishing)...');
     let isPublished = false;
-    try {
-      // Framer projesini yayına al
-      await framerInstance.publish();
-      console.log('🎉 Başarılı! Makaleniz smartkid.agency sitenizde canlıya alındı!');
-      isPublished = true;
-    } catch (pubErr) {
-      console.warn('⚠️  Framer API yayınlama çağrısında geçici bir uyarı oluştu (CMS verisi eklendi):', pubErr.message);
-      isPublished = false;
+    const maxRetries = 3;
+
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+      try {
+        console.log(`📡 Otomatik yayınlama denemesi (${attempt}/${maxRetries})...`);
+        await framerInstance.publish();
+        console.log('🎉 Başarılı! Makaleniz smartkid.agency sitenizde tam otomatik olarak canlıya alındı!');
+        isPublished = true;
+        break;
+      } catch (pubErr) {
+        console.warn(`⚠️  Yayınlama denemesi ${attempt} uyarısı: ${pubErr.message}`);
+        if (attempt < maxRetries) {
+          console.log('⏳ 5 saniye beklenip tekrar deneniyor...');
+          await new Promise(res => setTimeout(res, 5000));
+        }
+      }
     }
 
     return { success: true, published: isPublished, imageUrl: assignedImageUrl };
