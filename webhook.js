@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import { sendDetailedErrorEmail } from './emailer.js';
 
 /**
  * Yeni makale detaylarını no-code otomasyon (Make.com) webhook'una gönderir.
@@ -70,10 +71,22 @@ export async function sendToWebhook(article, imageUrl) {
       return true;
     } else {
       console.error(`❌ Webhook Hatası (HTTP ${response.status})`);
+      await sendDetailedErrorEmail({
+        subject: 'LinkedIn Otomatik Paylaşımı Aksadı',
+        articleTitle: article.title,
+        cause: `Blog yazınız sitemizde canlıya alındı fakat Make.com Webhook'u HTTP ${response.status} hatası döndürdü.`,
+        solution: '1. Make.com hesabınıza girin ve senaryonuzun "ON" (Açık) konumda olduğunu doğrulayın.\n2. Webhook modülünüzün aktifliğini kontrol edin.'
+      });
       return false;
     }
   } catch (error) {
     console.error('❌ Webhook\'a veri gönderilirken hata oluştu:', error);
+    await sendDetailedErrorEmail({
+      subject: 'LinkedIn Otomatik Paylaşımı Aksadı',
+      articleTitle: article.title,
+      cause: `Make.com Webhook sunucusuna bağlanırken ağ hatası oluştu: ${error.message}`,
+      solution: 'Make.com servis durumunu ve webhook URL adresinizi kontrol edin.'
+    });
     return false;
   }
 }

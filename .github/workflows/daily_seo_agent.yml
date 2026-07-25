@@ -42,6 +42,8 @@ jobs:
           USE_GOOGLE_SEARCH: ${{ secrets.USE_GOOGLE_SEARCH }}
           GITHUB_EVENT_SCHEDULE: ${{ github.event.schedule }}
           MAKE_WEBHOOK_URL: ${{ secrets.MAKE_WEBHOOK_URL }}
+          MAIL_USERNAME: ${{ secrets.MAIL_USERNAME }}
+          MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
         run: |
           if [ -n "${{ github.event.inputs.topic_index }}" ]; then
             node index.js --topic ${{ github.event.inputs.topic_index }}

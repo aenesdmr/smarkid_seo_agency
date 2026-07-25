@@ -11,6 +11,7 @@
   "dependencies": {
     "@google/genai": "latest",
     "dotenv": "^16.4.5",
-    "framer-api": "latest"
+    "framer-api": "latest",
+    "nodemailer": "^9.0.3"
   }
 }

@@ -83,11 +83,26 @@ ${article.content}
     } else if (result.success && !result.published) {
       console.log('\n⚠️ Makale Framer CMS\'e yüklendi fakat Framer API yayınlama uyarısı verdi.');
       console.log('🛑 404 kırık link paylaşımını önlemek için LinkedIn Webhook paylaşımı ertelendi.');
+      
+      await sendDetailedErrorEmail({
+        subject: 'Framer Canlıya Alma Beklemede',
+        articleTitle: article.title,
+        cause: 'Makaleniz Framer CMS koleksiyonunuza eklendi ancak Framer canlı yayın servisi anlık olarak yanıt vermedi (veya Framer editörünüz bilgisayarınızda açık olduğu için canlı oturum kilidi oluştu).',
+        solution: '1. Framer paneline girin (https://framer.com/projects/SmartKid--mjmtIYQ4xATe4SDQurEm-cjSD8)\n2. Sağ üstteki mavi "Publish" butonuna basarak makaleyi canlıya alın.'
+      });
     } else {
       console.log('\n⚠️ İşlem tamamlandı fakat bazı uyarılara veya hatalara rastlandı.');
     }
   } catch (error) {
     console.error('\n❌ Süreç sırasında kritik bir hata oluştu:', error);
+
+    await sendDetailedErrorEmail({
+      subject: 'Kritik İçerik Üretim Aksaklığı',
+      cause: `Yapay zeka veya sistem çalıştırma sırasında bir hata oluştu: ${error.message}`,
+      solution: 'GitHub Actions çalıştırma loglarını kontrol edebilirsiniz: https://github.com/aenesdmr/smarkid_seo_agency/actions',
+      details: error.stack
+    });
+
     process.exit(1);
   }
 }
