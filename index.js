@@ -9,6 +9,15 @@ import { generateFreshTopic } from './topic_generator.js';
 import fs from 'fs';
 import path from 'path';
 
+function isSimilarTopic(title1, title2) {
+  const clean1 = title1.toLowerCase().replace(/[^a-z0-9çğıöşü]/g, ' ').split(/\s+/).filter(w => w.length > 3);
+  const clean2 = title2.toLowerCase().replace(/[^a-z0-9çğıöşü]/g, ' ').split(/\s+/).filter(w => w.length > 3);
+
+  const commonWords = clean1.filter(word => clean2.includes(word));
+  // Eğer 2 veya daha fazla anahtar kelime eşleşiyorsa aynı konudur
+  return commonWords.length >= 2;
+}
+
 async function main() {
   console.log('🌟 ==================================================');
   console.log('🚀 Smartkid.agency SEO & GEO Günlük Blog Ajanı');
@@ -37,15 +46,19 @@ async function main() {
   const nextIssueNumber = (stateData.lastIssueNumber || 77) + 1;
   let selectedTopic = null;
 
-  // Konu seçimi: Eğer elle verildiyse onu kullan, verilmediyse taze konu bul
+  // Konu seçimi: Eğer elle verildiyse onu kullan, verilmediyse benzer konuları tamamen süz ve taze konu üret
   if (topicIndex >= 0 && topicIndex < config.topics.length) {
     selectedTopic = config.topics[topicIndex];
   } else {
-    const unusedTopics = config.topics.filter(t => !stateData.usedTopics.includes(t.title));
+    const unusedTopics = config.topics.filter(t => {
+      const isAlreadyUsed = stateData.usedTopics.some(usedTitle => isSimilarTopic(t.title, usedTitle));
+      return !isAlreadyUsed;
+    });
+
     if (unusedTopics.length > 0) {
       selectedTopic = unusedTopics[0];
     } else {
-      console.log('🔄 Statik konu listesindeki tüm konular daha önce işlendi. Yapay zeka ile yepyeni taze bir konu üretiliyor...');
+      console.log('🔄 Statik listedeki tüm konular işlendi. Yapay Zeka ile %100 YEPYENİ TAZE BİR KONU üretiliyor...');
       selectedTopic = await generateFreshTopic(stateData.usedTopics);
     }
   }
@@ -58,7 +71,7 @@ async function main() {
     // 1. Ajanı çalıştırıp makaleyi yazdır
     const article = await writeArticle(selectedTopic);
 
-    // 2. Numaralı & Markalı Kapak Görselini Üret (#SIO XX)
+    // 2. Kapak Görselini Üret (#SIO XX)
     const coverResult = await generateBrandedCover(selectedTopic, nextIssueNumber, stateData);
     article.coverImageUrl = coverResult.publicUrl;
     article.issueNumber = nextIssueNumber;
@@ -70,7 +83,7 @@ async function main() {
     console.log(`ℹ️  Meta Açıklama: "${article.metaDescription}"`);
     console.log(`🖼️  Üretilen Kapak URL: "${article.coverImageUrl}"`);
 
-    // 3. Yerel bir yedek kopyası kaydet (İnceleme kolaylığı için)
+    // 3. Yerel bir yedek kopyası kaydet
     const backupDir = path.join(process.cwd(), 'published_articles');
     if (!fs.existsSync(backupDir)) {
       fs.mkdirSync(backupDir, { recursive: true });
