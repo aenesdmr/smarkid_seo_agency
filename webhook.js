@@ -5,10 +5,11 @@ import { sendDetailedErrorEmail } from './emailer.js';
 /**
  * Yeni makale detaylarını no-code otomasyon (Make.com) webhook'una gönderir.
  * @param {Object} article - Makale objesi
+ * @param {number} issueNumber - Kesin SIO Sayı Numarası
  * @param {string} imageUrl - Kapak görseli URL'si
  * @returns {Promise<boolean>} İşlem başarısı
  */
-export async function sendToWebhook(article, imageUrl) {
+export async function sendToWebhook(article, issueNumber, imageUrl) {
   const webhookUrl = process.env.MAKE_WEBHOOK_URL;
 
   if (!webhookUrl || webhookUrl === 'your_make_webhook_url_here' || webhookUrl.startsWith('your_')) {
@@ -16,30 +17,27 @@ export async function sendToWebhook(article, imageUrl) {
     return false;
   }
 
-  // State dosyasından sıradaki kesin sayı numarasını al ve güncelle
+  // State dosyasını güncelle
   const statePath = path.join(process.cwd(), 'state.json');
-  let currentNumber = 71;
-
   try {
+    let stateData = { lastIssueNumber: issueNumber, usedTopics: [], usedImages: [] };
     if (fs.existsSync(statePath)) {
-      const stateData = JSON.parse(fs.readFileSync(statePath, 'utf8'));
-      currentNumber = (stateData.lastIssueNumber || 71) + 1;
-    } else {
-      currentNumber = 72;
+      stateData = JSON.parse(fs.readFileSync(statePath, 'utf8'));
     }
-  } catch (e) {
-    currentNumber = 72;
-  }
+    stateData.lastIssueNumber = issueNumber;
+    if (article.title && !stateData.usedTopics.includes(article.title)) {
+      stateData.usedTopics.push(article.title);
+    }
+    if (imageUrl && !stateData.usedImages.includes(imageUrl)) {
+      stateData.usedImages.push(imageUrl);
+    }
 
-  // Yeni sayıyı kaydet
-  try {
-    fs.writeFileSync(statePath, JSON.stringify({ lastIssueNumber: currentNumber }, null, 2), 'utf8');
-    console.log(`🔢 SIO Sayı Numarası Güncellendi: SIO #${currentNumber}`);
+    fs.writeFileSync(statePath, JSON.stringify(stateData, null, 2), 'utf8');
+    console.log(`🔢 SIO Sayı Numarası Güncellendi: SIO #${issueNumber}`);
   } catch (err) {
     console.error('⚠️ state.json kaydedilemedi:', err);
   }
 
-  const issueNumber = currentNumber;
   const linkedinText = `SIO #${issueNumber} yayında! Ekibimiz sizin için yazdı:\n\n"${article.title}"\n\n📌 ${article.metaDescription}\n\nOkumak için: https://www.smartkid.agency/blog/${article.slug}`;
 
   const defaultImage = "https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?w=1200&auto=format&fit=crop&q=80";

@@ -129,10 +129,10 @@ ${article.content}
         } else if (fieldType === 'number') {
           fieldData[field.id] = { type: 'number', value: Number(mappedValue) };
         } else if (fieldType === 'image') {
-          const imageUrl = await getAbstractImage(article.coverImageColor);
+          const imageUrl = article.coverImageUrl || await getAbstractImage(article.coverImageColor);
           fieldData[field.id] = { type: 'image', value: imageUrl };
           assignedImageUrl = imageUrl;
-          console.log(`🖼️  Makale için Unsplash'ten abstract 3D render görseli atandı: ${imageUrl}`);
+          console.log(`🖼️  Makale için numaralı kapak görseli atandı: ${imageUrl}`);
         }
       }
     }
