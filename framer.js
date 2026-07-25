@@ -146,18 +146,21 @@ ${article.content}
     ]);
 
     console.log('🚀 Sitede yapılan değişiklikler yayınlanıyor (Publishing)...');
+    let isPublished = false;
     try {
       // Framer projesini yayına al
       await framerInstance.publish();
       console.log('🎉 Başarılı! Makaleniz smartkid.agency sitenizde canlıya alındı!');
+      isPublished = true;
     } catch (pubErr) {
       console.warn('⚠️  Framer API yayınlama çağrısında geçici bir uyarı oluştu (CMS verisi eklendi):', pubErr.message);
+      isPublished = false;
     }
 
-    return { success: true, totalItems: totalItemsCount + 1, imageUrl: assignedImageUrl };
+    return { success: true, published: isPublished, imageUrl: assignedImageUrl };
   } catch (error) {
     console.error('❌ Framer CMS yayını sırasında hata oluştu:', error);
-    return { success: false, totalItems: 0, imageUrl: '' };
+    return { success: false, published: false, imageUrl: '' };
   } finally {
     if (framerInstance) {
       try {

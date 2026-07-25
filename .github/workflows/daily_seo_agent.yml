@@ -49,6 +49,15 @@ jobs:
             node index.js
           fi
 
+      - name: Commit updated state.json (SIO issue counter)
+        if: always()
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add state.json || true
+          git commit -m "chore: update SIO issue number counter in state.json [skip ci]" || true
+          git push || true
+
       - name: Send error email on failure
         if: failure()
         uses: dawidd6/action-send-mail@v3

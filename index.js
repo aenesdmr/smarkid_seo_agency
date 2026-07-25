@@ -76,12 +76,15 @@ ${article.content}
     console.log(`\n📤 Framer CMS yayınlama süreci başlatılıyor...`);
     const result = await publishToFramer(article);
 
-    if (result.success) {
-      console.log('\n✨ İşlem başarıyla tamamlandı!');
+    if (result.success && result.published) {
+      console.log('\n✨ Makale CMS\'e eklendi ve Framer sitesi başarıyla canlıya alındı!');
       // LinkedIn otomatik paylaşımı için Make.com Webhook'unu tetikle
-      await sendToWebhook(article, result.totalItems, result.imageUrl);
+      await sendToWebhook(article, result.imageUrl);
+    } else if (result.success && !result.published) {
+      console.log('\n⚠️ Makale Framer CMS\'e yüklendi fakat Framer API yayınlama uyarısı verdi.');
+      console.log('🛑 404 kırık link paylaşımını önlemek için LinkedIn Webhook paylaşımı ertelendi.');
     } else {
-      console.log('\n⚠️  İşlem tamamlandı fakat bazı uyarılara veya hatalara rastlandı.');
+      console.log('\n⚠️ İşlem tamamlandı fakat bazı uyarılara veya hatalara rastlandı.');
     }
   } catch (error) {
     console.error('\n❌ Süreç sırasında kritik bir hata oluştu:', error);
