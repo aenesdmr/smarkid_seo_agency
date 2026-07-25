@@ -2,6 +2,7 @@ import 'dotenv/config';
 import { config } from './config.js';
 import { writeArticle } from './agent.js';
 import { publishToFramer } from './framer.js';
+import { sendToWebhook } from './webhook.js';
 import fs from 'fs';
 import path from 'path';
 
@@ -77,6 +78,8 @@ ${article.content}
 
     if (success) {
       console.log('\n✨ İşlem başarıyla tamamlandı!');
+      // LinkedIn otomatik paylaşımı için Make.com Webhook'unu tetikle
+      await sendToWebhook(article);
     } else {
       console.log('\n⚠️  İşlem tamamlandı fakat bazı uyarılara veya hatalara rastlandı.');
     }

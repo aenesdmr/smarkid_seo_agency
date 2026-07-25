@@ -41,6 +41,7 @@ jobs:
           FRAMER_COLLECTION_ID: ${{ secrets.FRAMER_COLLECTION_ID }}
           USE_GOOGLE_SEARCH: ${{ secrets.USE_GOOGLE_SEARCH }}
           GITHUB_EVENT_SCHEDULE: ${{ github.event.schedule }}
+          MAKE_WEBHOOK_URL: ${{ secrets.MAKE_WEBHOOK_URL }}
         run: |
           if [ -n "${{ github.event.inputs.topic_index }}" ]; then
             node index.js --topic ${{ github.event.inputs.topic_index }}
