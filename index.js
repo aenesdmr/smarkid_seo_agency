@@ -74,12 +74,12 @@ ${article.content}
 
     // 3. Framer'da yayınla
     console.log(`\n📤 Framer CMS yayınlama süreci başlatılıyor...`);
-    const success = await publishToFramer(article);
+    const result = await publishToFramer(article);
 
-    if (success) {
+    if (result.success) {
       console.log('\n✨ İşlem başarıyla tamamlandı!');
       // LinkedIn otomatik paylaşımı için Make.com Webhook'unu tetikle
-      await sendToWebhook(article);
+      await sendToWebhook(article, result.totalItems);
     } else {
       console.log('\n⚠️  İşlem tamamlandı fakat bazı uyarılara veya hatalara rastlandı.');
     }

@@ -39,10 +39,10 @@ ${article.content}
       console.log(`✅ Makale başarıyla yerel olarak kaydedildi!`);
       console.log(`📂 Dosya konumu: ${filePath}`);
       console.log(`💡 API anahtarlarınızı yerleştirdikten sonra bu yazı otomatik olarak Framer'a yüklenecektir.`);
-      return true;
+      return { success: true, totalItems: 34 };
     } catch (err) {
       console.error('❌ Yerel dosya yazılırken bir hata oluştu:', err);
-      return false;
+      return { success: false, totalItems: 0 };
     }
   }
 
@@ -62,10 +62,12 @@ ${article.content}
       console.error(`❌ Hata: '${collectionId}' isimli veya ID'li CMS koleksiyonu sitenizde bulunamadı.`);
       console.log('Mevcut Koleksiyonlar:');
       collections.forEach(c => console.log(`- Adı: "${c.name}", ID: "${c.id}"`));
-      return false;
+      return { success: false, totalItems: 0 };
     }
 
     console.log(`🎯 Hedef Koleksiyon Bulundu: "${targetCollection.name}"`);
+    const items = await targetCollection.getItems();
+    const totalItemsCount = items.length;
 
     // Koleksiyondaki alanları (fields) analiz edip akıllı eşleştirme yapalım
     const fields = await targetCollection.getFields();
@@ -146,10 +148,10 @@ ${article.content}
     await framerInstance.publish();
 
     console.log('🎉 Başarılı! Makaleniz smartkid.agency sitenizde canlıya alındı!');
-    return true;
+    return { success: true, totalItems: totalItemsCount + 1 };
   } catch (error) {
     console.error('❌ Framer CMS yayını sırasında hata oluştu:', error);
-    return false;
+    return { success: false, totalItems: 0 };
   } finally {
     if (framerInstance) {
       try {

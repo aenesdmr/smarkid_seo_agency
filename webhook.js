@@ -3,7 +3,7 @@
  * @param {Object} article - Makale objesi
  * @returns {Promise<boolean>} İşlem başarısı
  */
-export async function sendToWebhook(article) {
+export async function sendToWebhook(article, totalItems) {
   const webhookUrl = process.env.MAKE_WEBHOOK_URL;
 
   if (!webhookUrl || webhookUrl === 'your_make_webhook_url_here' || webhookUrl.startsWith('your_')) {
@@ -11,11 +11,17 @@ export async function sendToWebhook(article) {
     return false;
   }
 
+  // Eğer veritabanında (CMS'te) 35 post varsa (yeni eklenen dahil), bunu 71. sayı yapmak için +36 ekliyoruz.
+  const issueNumber = (totalItems || 35) + 36;
+  const linkedinText = `SIO #${issueNumber} yayında! Ekibimiz sizin için yazdı:\n\n"${article.title}"\n\n📌 ${article.metaDescription}\n\nOkumak için: https://www.smartkid.agency/blog/${article.slug}`;
+
   const payload = {
     title: article.title,
     slug: article.slug,
     metaDescription: article.metaDescription,
     url: `https://www.smartkid.agency/blog/${article.slug}`,
+    issueNumber: issueNumber,
+    linkedinText: linkedinText,
     publishedAt: new Date().toISOString()
   };
 
