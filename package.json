@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "start": "node index.js",
-    "test-local": "node index.js --local"
+    "test-local": "node index.js --local",
+    "weekly-audit": "node weekly_audit.js"
   },
   "dependencies": {
     "@google/genai": "latest",

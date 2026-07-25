@@ -1,0 +1,30 @@
+name: Weekly Agent Audit & Recommendation Report
+
+on:
+  schedule:
+    # Her Pazar akşamı 20:00 TSİ (17:00 UTC)
+    - cron: '0 17 * * 0'
+  workflow_dispatch:
+
+jobs:
+  weekly-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Weekly Agent Audit
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          MAIL_USERNAME: ${{ secrets.MAIL_USERNAME }}
+          MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
+        run: node weekly_audit.js
