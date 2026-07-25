@@ -1,35 +1,32 @@
 /**
- * Smartkid Blog Kategoriye Özel Kurumsal & Minimalist 3D Arka Plan Havuzu
- * Saçma veya alakasız stok fotoğraflar tamamen temizlenmiştir.
+ * Smartkid Blog Kategoriye Özel Soyut 3D Render & Kurumsal Arka Plan Havuzu
+ * TÜM MARKA LOGOLARI (Netflix, Spotify vb.) ve ALAKASIZ STOK GÖRSELLER TAMAMEN ELENMİŞTİR.
  */
 
 export const imagePool = {
-  b2b: [
-    'https://images.unsplash.com/photo-1557804506-669a67965ba0?w=1200&auto=format&fit=crop&q=80',
-    'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1200&auto=format&fit=crop&q=80',
-    'https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=1200&auto=format&fit=crop&q=80',
-    'https://images.unsplash.com/photo-1542744801-43245f175232?w=1200&auto=format&fit=crop&q=80',
-    'https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=1200&auto=format&fit=crop&q=80',
-  ],
-  ai_geo: [
+  meta_ads: [
     'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1200&auto=format&fit=crop&q=80',
     'https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?w=1200&auto=format&fit=crop&q=80',
     'https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?w=1200&auto=format&fit=crop&q=80',
     'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=1200&auto=format&fit=crop&q=80',
     'https://images.unsplash.com/photo-1614741118887-7a4ee193a5fa?w=1200&auto=format&fit=crop&q=80',
   ],
-  meta_ads: [
-    'https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=1200&auto=format&fit=crop&q=80',
-    'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200&auto=format&fit=crop&q=80',
-    'https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=1200&auto=format&fit=crop&q=80',
-    'https://images.unsplash.com/photo-1533750516457-a7f992034fec?w=1200&auto=format&fit=crop&q=80',
-    'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=1200&auto=format&fit=crop&q=80',
+  ai_geo: [
+    'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1200&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?w=1200&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?w=1200&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1614741118887-7a4ee193a5fa?w=1200&auto=format&fit=crop&q=80',
+  ],
+  b2b: [
+    'https://images.unsplash.com/photo-1557804506-669a67965ba0?w=1200&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1200&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=1200&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=1200&auto=format&fit=crop&q=80',
   ],
   seo_analytics: [
     'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200&auto=format&fit=crop&q=80',
     'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200&auto=format&fit=crop&q=80',
     'https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=1200&auto=format&fit=crop&q=80',
-    'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=1200&auto=format&fit=crop&q=80',
   ],
   saas_growth: [
     'https://images.unsplash.com/photo-1551434678-e076c223a692?w=1200&auto=format&fit=crop&q=80',
@@ -39,16 +36,16 @@ export const imagePool = {
 };
 
 /**
- * Makale başlığı ve anahtar kelimelere göre en uygun görsel kategorisini tespit eder.
+ * Makale konusuna en uygun soyut görsel kategorisini belirler.
  */
 export function getCategoryForArticle(article) {
   const text = `${article.title} ${article.keywords ? article.keywords.join(' ') : ''}`.toLowerCase();
   
-  if (text.includes('b2b') || text.includes('email') || text.includes('soğuk') || text.includes('cold') || text.includes('outbound')) {
-    return 'b2b';
-  }
   if (text.includes('meta') || text.includes('facebook') || text.includes('instagram') || text.includes('reklam') || text.includes('cbo') || text.includes('lookalike')) {
     return 'meta_ads';
+  }
+  if (text.includes('b2b') || text.includes('email') || text.includes('soğuk') || text.includes('cold') || text.includes('outbound')) {
+    return 'b2b';
   }
   if (text.includes('seo') || text.includes('geo') || text.includes('yapay zeka') || text.includes('ai') || text.includes('arama')) {
     return 'ai_geo';
