@@ -71,6 +71,11 @@ async function main() {
     // 1. Ajanı çalıştırıp makaleyi yazdır
     const article = await writeArticle(selectedTopic);
 
+    // Slug benzersizliğini garanti et (Framer CMS duplicate slug hatasını önle)
+    if (!article.slug.endsWith(`-sio-${nextIssueNumber}`)) {
+      article.slug = `${article.slug}-sio-${nextIssueNumber}`;
+    }
+
     // 2. Kapak Görselini Üret (#SIO XX)
     const coverResult = await generateBrandedCover(selectedTopic, nextIssueNumber, stateData);
     article.coverImageUrl = coverResult.publicUrl;
