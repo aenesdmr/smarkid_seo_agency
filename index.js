@@ -79,7 +79,7 @@ ${article.content}
     if (result.success) {
       console.log('\n✨ İşlem başarıyla tamamlandı!');
       // LinkedIn otomatik paylaşımı için Make.com Webhook'unu tetikle
-      await sendToWebhook(article, result.totalItems);
+      await sendToWebhook(article, result.totalItems, result.imageUrl);
     } else {
       console.log('\n⚠️  İşlem tamamlandı fakat bazı uyarılara veya hatalara rastlandı.');
     }

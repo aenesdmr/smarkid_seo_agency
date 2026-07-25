@@ -78,6 +78,7 @@ ${article.content}
     console.log('📊 CMS Alanları eşleştiriliyor...');
 
     const fieldData = {};
+    let assignedImageUrl = '';
     
     // Framer alan isimlerine göre akıllı eşleştirme (Başlık, İçerik, Meta vb.)
     for (const field of fields) {
@@ -130,6 +131,7 @@ ${article.content}
         } else if (fieldType === 'image') {
           const imageUrl = await getAbstractImage(article.coverImageColor);
           fieldData[field.id] = { type: 'image', value: imageUrl };
+          assignedImageUrl = imageUrl;
           console.log(`🖼️  Makale için Unsplash'ten abstract 3D render görseli atandı: ${imageUrl}`);
         }
       }
@@ -148,10 +150,10 @@ ${article.content}
     await framerInstance.publish();
 
     console.log('🎉 Başarılı! Makaleniz smartkid.agency sitenizde canlıya alındı!');
-    return { success: true, totalItems: totalItemsCount + 1 };
+    return { success: true, totalItems: totalItemsCount + 1, imageUrl: assignedImageUrl };
   } catch (error) {
     console.error('❌ Framer CMS yayını sırasında hata oluştu:', error);
-    return { success: false, totalItems: 0 };
+    return { success: false, totalItems: 0, imageUrl: '' };
   } finally {
     if (framerInstance) {
       try {

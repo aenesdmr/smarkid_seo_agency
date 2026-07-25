@@ -3,7 +3,7 @@
  * @param {Object} article - Makale objesi
  * @returns {Promise<boolean>} İşlem başarısı
  */
-export async function sendToWebhook(article, totalItems) {
+export async function sendToWebhook(article, totalItems, imageUrl) {
   const webhookUrl = process.env.MAKE_WEBHOOK_URL;
 
   if (!webhookUrl || webhookUrl === 'your_make_webhook_url_here' || webhookUrl.startsWith('your_')) {
@@ -15,11 +15,15 @@ export async function sendToWebhook(article, totalItems) {
   const issueNumber = (totalItems || 35) + 36;
   const linkedinText = `SIO #${issueNumber} yayında! Ekibimiz sizin için yazdı:\n\n"${article.title}"\n\n📌 ${article.metaDescription}\n\nOkumak için: https://www.smartkid.agency/blog/${article.slug}`;
 
+  // Örnek bir görsel linki yoksa varsayılan placeholder veya boş bırakabiliriz
+  const defaultImage = "https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?w=1200&auto=format&fit=crop&q=80";
+
   const payload = {
     title: article.title,
     slug: article.slug,
     metaDescription: article.metaDescription,
     url: `https://www.smartkid.agency/blog/${article.slug}`,
+    imageUrl: imageUrl || defaultImage,
     issueNumber: issueNumber,
     linkedinText: linkedinText,
     publishedAt: new Date().toISOString()
